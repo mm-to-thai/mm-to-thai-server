@@ -4,7 +4,11 @@ var {ClassScope,validateClassScopeJoi} = require("../model/class_scope");
 var router = express.Router();
 
 router.get("/",async(req,res) =>{
-   return res.status(200).send("Raw Class Scope List");
+   const classscopes = await ClassScope
+   .find()
+   .limit(10)
+   .sort({ _id: 1});
+   return res.status(200).send(classscopes);
 });
 
 router.post("/",async(req,res) => {
