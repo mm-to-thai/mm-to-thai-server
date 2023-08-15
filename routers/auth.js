@@ -1,6 +1,9 @@
 const express = require('express');
 const { User,validateUserJoi } = require("../model/user");
 
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
 var router = express.Router();
 
 ///Get All User
@@ -60,7 +63,7 @@ router.post("/login",async(req,res) => {
     return res.status(200).header({'x-auth-token': token}).send(user);
 });
 
-router.put("/:id",async(req,res) => {
+router.put("/:id",auth,async(req,res) => {
     var user = await User.findOne({fbId:req.params.id});
     user.userName = req.body.userName == undefined ?
     user.userName : req.body.userName;
@@ -78,7 +81,7 @@ router.put("/:id",async(req,res) => {
 });
 
    //Delete Lesson
-   router.delete("/:id",async(req,res) => {
+   router.delete("/:id",[auth,admin],async(req,res) => {
     User.deleteOne({fbId:req.params.id})
     .then((result) => {
         return res.status(200).send(result);

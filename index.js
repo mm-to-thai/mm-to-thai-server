@@ -13,14 +13,16 @@ if(!config.get("jwtPrivateKey")){
     process.exit(1);
 }
 
-mongoose.connect('mongodb://127.0.0.1:27017/mm_to_th')
+const db = config.get("db");
+mongoose.connect(db)
 .then((result) => {
-    console.log("Mongodb is connected....");
+    console.log(`Mongodb is connected to ${db}....`);
 }).catch((err) => {
     console.log(`Mongodb connecting error: ${err}`,);
 });
 
 const app = express();
+require("./middleware/prod")(app);
 
 app.use(express.json());
 app.use("/api/classscopes",classScope);
@@ -30,6 +32,7 @@ app.use("/api/contents",content);
 app.use("/api/questions",question);
 app.use("/api/auth",auth);
 
-app.listen(3000,() => {
+const port = process.env.PORT || 3000;
+app.listen(port,() => {
     console.log("Listening on port 3000....");
 });

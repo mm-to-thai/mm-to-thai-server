@@ -46,14 +46,14 @@ router.post("/",[auth,admin],async(req,res) => {
 
 
 ///Update ClassScope
-router.put("/:id",async(req,res) => {
+router.put("/:id",[auth,admin],async(req,res) => {
     var classscope = await ClassScope.findByIdAndUpdate(req.params.id,{
         $set:req.body,
     },{ new : true });
     return res.status(200).send(classscope);});
 
     //Delete ClassScope
-router.delete("/:id",async(req,res) => {
+router.delete("/:id",[auth,admin],async(req,res) => {
     ClassScope.deleteOne({_id:req.params.id})
     .then((result) => {
         return res.status(200).send(result);

@@ -1,6 +1,9 @@
 const express = require("express");
 var { Question,validateQuestion } = require("../model/question");
 
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
 var router = express.Router();
 
 ///Get All Content
@@ -57,7 +60,7 @@ router.get("/:id",async(req,res) => {
  });
 
 ///Create Question
-router.post("/",async(req,res) => {
+router.post("/",[auth,admin],async(req,res) => {
     var { error } = validateQuestion(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -70,7 +73,7 @@ router.post("/",async(req,res) => {
 });
 
 ///Update Question
-router.put("/:id",async(req,res) => {
+router.put("/:id",[auth,admin],async(req,res) => {
     var question = await Question.findByIdAndUpdate(req.params.id,{
         $set:req.body,
     },{ new : true })
@@ -80,7 +83,7 @@ router.put("/:id",async(req,res) => {
     return res.status(200).send(question);});
 
     //Delete Question
-router.delete("/:id",async(req,res) => {
+router.delete("/:id",[auth,admin],async(req,res) => {
     Question.deleteOne({_id:req.params.id})
     .then((result) => {
         return res.status(200).send(result);

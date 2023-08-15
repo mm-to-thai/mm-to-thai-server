@@ -1,6 +1,9 @@
 const express = require("express");
 var { Content,validateContent } = require("../model/content");
 
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
+
 var router = express.Router();
 
 ///Get All Content
@@ -54,7 +57,7 @@ router.get("/:id",async(req,res) => {
  });
 
 ///Create Content
-router.post("/",async(req,res) => {
+router.post("/",[auth,admin],async(req,res) => {
     var { error } = validateContent(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -67,14 +70,14 @@ router.post("/",async(req,res) => {
 });
 
 ///Update Content
-router.put("/:id",async(req,res) => {
+router.put("/:id",[auth,admin],async(req,res) => {
     var content = await Content.findByIdAndUpdate(req.params.id,{
         $set:req.body,
     },{ new : true }).populate("classId levelId lessonId","name");
     return res.status(200).send(content);});
 
     //Delete Content
-router.delete("/:id",async(req,res) => {
+router.delete("/:id",[auth,admin],async(req,res) => {
     Content.deleteOne({_id:req.params.id})
     .then((result) => {
         return res.status(200).send(result);

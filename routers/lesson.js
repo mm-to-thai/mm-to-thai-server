@@ -2,6 +2,8 @@ const express = require('express');
 var { Lesson,validateLessonJoi } = require("../model/lesson");
 var router = express.Router();
 
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 ///Get All Lesson
 router.get("/",async(req,res) => {
@@ -51,7 +53,7 @@ router.get("/:id",async(req,res) => {
  });
 
 ///Lesson Create
-router.post("/",async(req,res) =>{
+router.post("/",[auth,admin],async(req,res) =>{
     var { error } = validateLessonJoi(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -64,14 +66,14 @@ router.post("/",async(req,res) =>{
 });
 
 ///Update Lesson
-router.put("/:id",async(req,res) => {
+router.put("/:id",[auth,admin],async(req,res) => {
     var lesson = await Lesson.findByIdAndUpdate(req.params.id,{
         $set:req.body,
     },{ new : true }).populate("classId levelId");
     return res.status(200).send(lesson);});
 
     //Delete Lesson
-router.delete("/:id",async(req,res) => {
+router.delete("/:id",[auth,admin],async(req,res) => {
     Lesson.deleteOne({_id:req.params.id})
     .then((result) => {
         return res.status(200).send(result);
