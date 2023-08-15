@@ -1,3 +1,4 @@
 {
-    "jwtPrivateKey": "mmToTh_jwtPrivateKey"
+    "jwtPrivateKey": "mmToTh_jwtPrivateKey",
+    "db":"database_path"
 }
