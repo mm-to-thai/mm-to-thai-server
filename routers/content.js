@@ -8,6 +8,8 @@ router.get("/",async(req,res) => {
     const classId = req.query.classId;
     const levelId = req.query.levelId;
     const lessonId = req.query.lessonId;
+    var page = req.query.page == undefined ? 0 : req.query.page;
+    var limit = req.query.limit == undefined ? 10 : req.query.limit;
     if(classId && levelId && lessonId){
 
         const contents = await Content.find({
@@ -16,7 +18,8 @@ router.get("/",async(req,res) => {
             lessonId:lessonId,
         })
     .populate("classId levelId lessonId","name")
-    .limit(10)
+    .skip(limit * page)
+    .limit(limit)
     .sort({_id:1});
     const count = await Content.find({
         classId:classId,
@@ -31,7 +34,8 @@ router.get("/",async(req,res) => {
     }
     const contents = await Content.find()
     .populate("classId levelId lessonId","name")
-    .limit(10)
+    .skip(limit * page)
+    .limit(limit)
     .sort({_id:1});
     const count = await Content.find().count();
     const data = {

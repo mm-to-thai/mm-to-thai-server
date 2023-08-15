@@ -1,17 +1,37 @@
 const express = require("express");
+const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 var {ClassScope,validateClassScopeJoi} = require("../model/class_scope");
 
 var router = express.Router();
 
+/* router.use(auth); */
+
 router.get("/",async(req,res) =>{
+    var page = req.query.page == undefined ? 0 : req.query.page;
+    var limit = req.query.limit == undefined ? 10 : req.query.limit;
    const classscopes = await ClassScope
    .find()
-   .limit(10)
+   .skip(page * limit)
+   .limit(limit)
    .sort({ _id: 1});
-   return res.status(200).send(classscopes);
+   const count = await ClassScope
+   .find().count();
+   const data = {
+    "count":count,
+    "data":classscopes
+   };
+   return res.status(200).send(data);
 });
 
-router.post("/",async(req,res) => {
+///Get Specific Class
+router.get("/:id",async(req,res) => {
+    const classscope = await ClassScope
+    .findOne({_id:req.params.id});
+    return res.status(200).send(classscope);
+ });
+
+router.post("/",[auth,admin],async(req,res) => {
      //check req.body is valid
      var { error } = validateClassScopeJoi(req.body);
      if(error) return res.status(400).send(error.details[0].message);
@@ -21,6 +41,24 @@ router.post("/",async(req,res) => {
         return res.status(200).send(result);
     }).catch((err) => {
         return res.status(400).send(err);
+    });
+});
+
+
+///Update ClassScope
+router.put("/:id",async(req,res) => {
+    var classscope = await ClassScope.findByIdAndUpdate(req.params.id,{
+        $set:req.body,
+    },{ new : true });
+    return res.status(200).send(classscope);});
+
+    //Delete ClassScope
+router.delete("/:id",async(req,res) => {
+    ClassScope.deleteOne({_id:req.params.id})
+    .then((result) => {
+        return res.status(200).send(result);
+    }).catch((err) => {
+        return res.status(400).send(err); 
     });
 });
 

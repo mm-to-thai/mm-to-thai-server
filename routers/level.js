@@ -8,13 +8,15 @@ var router = express.Router();
 router.get("/",async(req,res) => {
     //Get Levels By Class ID
     const id = req.query.classId;
-
+    var page = req.query.page == undefined ? 0 : req.query.page;
+    var limit = req.query.limit == undefined ? 10 : req.query.limit;
     if(id){
         const levels = await Level.find({
             classId: id
         })
         .populate("classId","name")
-        .limit(10)
+        .skip(page * limit)
+        .limit(limit)
         .sort({_id:1});
         const count = await Level.find({
             classId: id
@@ -29,7 +31,8 @@ router.get("/",async(req,res) => {
    //Get All
    const levels = await Level.find()
    .populate("classId","name")
-   .limit(10)
+   .skip(page * limit)
+   .limit(limit)
    .sort({ _id: 1});
    const count = await Level.find().count();
     var data = {

@@ -1,0 +1,90 @@
+const express = require('express');
+const { User,validateUserJoi } = require("../model/user");
+
+var router = express.Router();
+
+///Get All User
+router.get("/",async(req,res) => {
+    var page = req.query.page == undefined ? 0 : req.query.page;
+    var limit = req.query.limit == undefined ? 10 : req.query.limit;
+    const users = await User.find()
+    .skip(page * limit)
+    .limit(limit)
+    .sort({_id:1});
+    const count = await User.find().count();
+    const data = {
+        "count": count,
+        "data":users
+    };
+    return res.status(200).send(data);
+});
+
+///Get Specific User
+router.get("/:id",async(req,res) => {
+    const user = await User
+    .findOne({fbId:req.params.id});
+    return res.status(200).send(user);
+ });
+
+//Create User
+router.post("/register",async(req,res) => {
+    //validate req.body with joi
+    const { error } = validateUserJoi(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+    //check use is already login or not by req.body.fbId
+    //if exist return already registered.
+    let user = await User.findOne({ fbId: req.body.fbId });
+    if(user) return res.status(400).send("User already registered.");
+    
+    //if not save user and return
+    User.create(req.body)
+    .then((result) => {
+        const token = result.generateAuthToken();
+    return res.status(200).header({'x-auth-token': token}).send(result);
+
+    }).catch((err) => {
+        return res.status(400).send(err);
+    });
+});
+
+router.post("/login",async(req,res) => {
+    //validate req.body with joi
+    const { error } = validateUserJoi(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+    //if user not exist,we send first need to register
+    let user = await User.findOne({ fbId: req.body.fbId });
+    if(!user) return res.status(400).send("Not found given user.Please register first!.");
+    
+    //if use is exist we need to return jwt token
+    const token = user.generateAuthToken();
+    return res.status(200).header({'x-auth-token': token}).send(user);
+});
+
+router.put("/:id",async(req,res) => {
+    var user = await User.findOne({fbId:req.params.id});
+    user.userName = req.body.userName == undefined ?
+    user.userName : req.body.userName;
+    user.avatar = req.body.avatar == undefined ? user.avatar : req.body.avatar;
+    user.email = req.body.email == undefined ? user.email : req.body.email;
+    user.phone = req.body.phone == undefined ? user.phone : req.body.phone;
+    user.role = req.body.role == undefined ? user.role : req.body.role;
+    user.save()
+    .then((result) => {
+        return res.status(200).send(result);
+    }).catch((err) => {
+        return res.status(400).send(err);
+    });
+    
+});
+
+   //Delete Lesson
+   router.delete("/:id",async(req,res) => {
+    User.deleteOne({fbId:req.params.id})
+    .then((result) => {
+        return res.status(200).send(result);
+    }).catch((err) => {
+        return res.status(400).send(err); 
+    });
+});
+
+module.exports.auth = router;
