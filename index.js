@@ -25,7 +25,7 @@ mongoose.connect(db)
 
 const app = express();
 require("./middleware/prod")(app);
-app.options('*',cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use("/api/classscopes",classScope);
 app.use("/api/levels",level);
