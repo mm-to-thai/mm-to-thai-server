@@ -8,6 +8,7 @@ const {lesson} = require("./routers/lesson");
 const {content} = require("./routers/content");
 const {question} = require("./routers/question");
 const {auth} = require("./routers/auth");
+const { corsOptions } = require("./middleware/cors_options");
 
 if(!config.get("jwtPrivateKey")){
     console.log("JWTPrivateKey is not defined");
@@ -24,7 +25,7 @@ mongoose.connect(db)
 
 const app = express();
 require("./middleware/prod")(app);
-app.options('*',cors());
+app.options('*',cors(corsOptions));
 app.use(express.json());
 app.use("/api/classscopes",classScope);
 app.use("/api/levels",level);
