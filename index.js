@@ -1,6 +1,7 @@
 const express  = require("express");
 const mongoose = require("mongoose");
 const config = require("config");
+const cors = require("cors");
 const {classScope} = require("./routers/class_scope");
 const {level} = require("./routers/level");
 const {lesson} = require("./routers/lesson"); 
@@ -23,7 +24,7 @@ mongoose.connect(db)
 
 const app = express();
 require("./middleware/prod")(app);
-
+app.use(cors());
 app.use(express.json());
 app.use("/api/classscopes",classScope);
 app.use("/api/levels",level);
