@@ -43,6 +43,7 @@ router.post("/register",async(req,res) => {
     User.create(req.body)
     .then((result) => {
         const token = result.generateAuthToken();
+        res.setHeader("Access-Control-Expose-Headers","*");
     return res.status(200).header({'x-auth-token': token}).send(result);
 
     }).catch((err) => {
@@ -60,6 +61,8 @@ router.post("/login",async(req,res) => {
     
     //if use is exist we need to return jwt token
     const token = user.generateAuthToken();
+    res.setHeader("Access-Control-Expose-Headers","*");
+
     return res.status(200).header({'x-auth-token': token}).send(user);
 });
 
