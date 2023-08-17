@@ -56,10 +56,13 @@ router.get("/:id",async(req,res) => {
 router.post("/",[auth,admin],async(req,res) =>{
     var { error } = validateLessonJoi(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
-    Lesson.create(req.body)
+    let newLesson = new Lesson(req.body);
+    newLesson.save()
     .then((result) => {
-        return res.status(200).send(result);
+        Lesson.populate(newLesson,"classId levelId","name")
+        .then((question) => {
+            return res.status(200).send(question);
+        });
     }).catch((err) => {
         return res.status(400).send(err);
     });

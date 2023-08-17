@@ -60,10 +60,13 @@ router.get("/:id",async(req,res) => {
 router.post("/",[auth,admin],async(req,res) => {
     var { error } = validateContent(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-
-    Content.create(req.body)
+    let newContent = new Content(req.body);
+    newContent.save()
     .then((result) => {
-        return res.status(200).send(result);
+        Content.populate(newContent,"classId levelId lessonId","name")
+        .then((question) => {
+            return res.status(200).send(question);
+        });
     }).catch((err) => {
         return res.status(400).send(err);
     });
