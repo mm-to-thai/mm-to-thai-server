@@ -66,7 +66,7 @@ router.post("/",[auth,admin],async(req,res) => {
     let newQuestion = new Question(req.body);
     newQuestion.save()
     .then((result) => {
-        Question.populate(newQuestion,"classId levelId lessonId","name")
+        result.populate("classId levelId lessonId","name")
         .then((question) => {
             return res.status(200).send(question);
         });
