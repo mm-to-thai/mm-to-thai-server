@@ -71,9 +71,13 @@ router.get("/:id",async(req,res) => {
 router.post("/",[auth,admin],async(req,res) => {
     var { error } = validateLevelJoi(req.body);
     if(error) return res.status(400).send(error.details[0].message);
-    Level.create(req.body)
+    let newLevel = new Level(req.body);
+    newLevel.save()
     .then((result) => {
-        return res.status(200).send(result);
+        Level.populate(newLevel,"classId")
+        .then((level) => {
+            return res.status(200).send(level);
+        });
     }).catch((err) => {
         return res.status(400).send(err);
     });
