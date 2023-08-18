@@ -65,9 +65,12 @@ router.post("/",[auth,admin],async(req,res) => {
     if(error) return res.status(400).send(error.details[0].message);
     let newQuestion = new Question(req.body);
     newQuestion.save()
-    .then((result) => {
-       
-        return res.status(200).send(result);
+    .then(async(result) => {
+        const question = await Question
+        .findOne({_id:result._id})
+        .populate("classId levelId lessonId","name")
+        .populate("contentId","-classId -levelId -lessonId")
+        return res.status(200).send(question);
     }).catch((err) => {
         return res.status(400).send(err);
     });
