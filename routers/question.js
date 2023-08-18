@@ -67,7 +67,7 @@ router.post("/",[auth,admin],async(req,res) => {
     newQuestion.save()
     .then(async(result) => {
        let que = await result.populate("classId levelId lessonId","name")
-        .populate("contentId","-classId -levelId -lessonId");
+        .populate("contentId"/* ,"-classId -levelId -lessonId" */);
         return res.status(200).send(que);
     }).catch((err) => {
         return res.status(400).send(err);
