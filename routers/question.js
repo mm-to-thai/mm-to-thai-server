@@ -18,6 +18,8 @@ router.get("/",async(req,res) => {
     const lessonId = req.query.lessonId;
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
+    const searchValue = req.query.name;
+    const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
     if(classId && levelId && lessonId){
 
         const questions = await Question.find({
@@ -41,7 +43,13 @@ router.get("/",async(req,res) => {
     };
     return res.status(200).send(data);
     }
-    const questions = await Question.find()
+    const questions = searchValue == undefined ?
+     await Question.find()
+    .populate("classId levelId lessonId","name")
+    .populate("contentId","-classId -levelId -lessonId")
+    .skip(page * limit)
+    .limit(limit)
+    .sort({_id:1}) : await Question.find({answer:pattern})
     .populate("classId levelId lessonId","name")
     .populate("contentId","-classId -levelId -lessonId")
     .skip(page * limit)

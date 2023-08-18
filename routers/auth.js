@@ -15,7 +15,12 @@ router.get("/count",async(req,res) =>{
 router.get("/",async(req,res) => {
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
-    const users = await User.find()
+    const searchValue = req.query.name;
+    const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
+    const users = searchValue == undefined ? await User.find()
+    .skip(page * limit)
+    .limit(limit)
+    .sort({_id:1}) : await User.find({ userName:pattern })
     .skip(page * limit)
     .limit(limit)
     .sort({_id:1});

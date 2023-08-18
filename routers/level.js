@@ -18,6 +18,8 @@ router.get("/",async(req,res) => {
     const id = req.query.classId;
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
+    const searchValue = req.query.name;
+    const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
     if(id){
         const levels = await Level.find({
             classId: id
@@ -37,7 +39,12 @@ router.get("/",async(req,res) => {
     }
 
    //Get All
-   const levels = await Level.find()
+   const levels = searchValue == undefined ?
+    await Level.find()
+   .populate("classId","name")
+   .skip(page * limit)
+   .limit(limit)
+   .sort({ _id: 1}) : await Level.find({name:pattern})
    .populate("classId","name")
    .skip(page * limit)
    .limit(limit)
