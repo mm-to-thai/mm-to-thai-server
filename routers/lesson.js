@@ -5,10 +5,7 @@ var router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
-router.get("/count",async(req,res) =>{
-    const result = await Lesson.find().count();
-    return res.status(200).send(result);
- });
+
 ///Get All Lesson
 router.get("/",async(req,res) => {
     const classId = req.query.classId;
@@ -48,6 +45,10 @@ router.get("/",async(req,res) => {
     return res.status(200).send(data);
 });
 
+router.get("/count",async(req,res) =>{
+    const result = await Lesson.find().count();
+    return res.status(200).send(result);
+ });
 ///Get Specific Lesson
 router.get("/:id",async(req,res) => {
     const lesson = await Lesson
