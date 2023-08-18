@@ -7,6 +7,10 @@ const admin = require("../middleware/admin");
 var router = express.Router();
 
 
+router.get("/count",async(req,res) =>{
+    const result = await Level.find().count();
+    return res.status(200).send(result);
+ });
 
 router.get("/",async(req,res) => {
     //Get Levels By Class ID

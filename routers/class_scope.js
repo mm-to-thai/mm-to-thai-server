@@ -7,10 +7,25 @@ var router = express.Router();
 
 /* router.use(auth); */
 
+router.get("/count",async(req,res) =>{
+   const result = await ClassScope
+   .find().count();
+   return res.status(200).send(result);
+});
+
 router.get("/",async(req,res) =>{
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
-   const classscopes = await ClassScope
+    const searchValue = req.query.name;
+    const pattern = new RegExp(`^${nameValue}$`, 'i');
+   const classscopes = searchValue == undefined ? 
+   await ClassScope
+   .find({ name: pattern })
+   .skip(page * limit)
+   .limit(limit)
+   .sort({ _id: 1}) 
+   : 
+   await ClassScope
    .find()
    .skip(page * limit)
    .limit(limit)

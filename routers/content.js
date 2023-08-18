@@ -6,6 +6,10 @@ const admin = require("../middleware/admin");
 
 var router = express.Router();
 
+router.get("/count",async(req,res) =>{
+    const result = await Content.find().count();
+    return res.status(200).send(result);
+ });
 ///Get All Content
 router.get("/",async(req,res) => {
     const classId = req.query.classId;

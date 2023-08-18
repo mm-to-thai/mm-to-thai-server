@@ -6,6 +6,10 @@ const admin = require("../middleware/admin");
 
 var router = express.Router();
 
+router.get("/count",async(req,res) =>{
+    const result = await User.find().count();
+    return res.status(200).send(result);
+ });
 ///Get All User
 router.get("/",async(req,res) => {
     var page = req.query.page == undefined ? 0 : req.query.page;

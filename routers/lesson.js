@@ -5,6 +5,10 @@ var router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 
+router.get("/count",async(req,res) =>{
+    const result = await Lesson.find().count();
+    return res.status(200).send(result);
+ });
 ///Get All Lesson
 router.get("/",async(req,res) => {
     const classId = req.query.classId;
