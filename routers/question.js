@@ -21,7 +21,7 @@ router.get("/",async(req,res) => {
             lessonId:lessonId,
         })
     .populate("classId levelId lessonId","name")
-    .populate("contentId")
+    .populate("contentId","-classId -levelId -lessonId")
     .skip(page * limit)
     .limit(limit)
     .sort({_id:1});
@@ -38,7 +38,7 @@ router.get("/",async(req,res) => {
     }
     const questions = await Question.find()
     .populate("classId levelId lessonId","name")
-    .populate("contentId")
+    .populate("contentId","-classId -levelId -lessonId")
     .skip(page * limit)
     .limit(limit)
     .sort({_id:1});
@@ -55,7 +55,7 @@ router.get("/:id",async(req,res) => {
     const question = await Question
     .findOne({_id:req.params.id})
     .populate("classId levelId lessonId","name")
-    .populate("contentId");
+    .populate("contentId","-classId -levelId -lessonId")
     return res.status(200).send(question);
  });
 
@@ -68,7 +68,7 @@ router.post("/",[auth,admin],async(req,res) => {
     .then((result) => {
         result
         .populate("classId levelId lessonId","name")
-        .populate("contentId")
+        .populate("contentId","-classId -levelId -lessonId")
         .then((question) => {
             return res.status(200).send(question);
         });
@@ -83,7 +83,7 @@ router.put("/:id",[auth,admin],async(req,res) => {
         $set:req.body,
     },{ new : true })
     .populate("classId levelId lessonId","name")
-    .populate("contentId")
+    .populate("contentId","-classId -levelId -lessonId")
     ;
     return res.status(200).send(question);});
 
