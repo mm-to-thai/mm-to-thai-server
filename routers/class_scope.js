@@ -18,7 +18,7 @@ router.get("/",async(req,res) =>{
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
     const searchValue = req.query.name;
     const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
-   const classscopes = searchValue == undefined ? 
+   const classscopes = searchValue != undefined ? 
    await ClassScope
    .find({ name: pattern })
    .skip(page * limit)
