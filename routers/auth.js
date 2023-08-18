@@ -8,7 +8,8 @@ var router = express.Router();
 
 router.get("/count",async(req,res) =>{
     const result = await User.find().count();
-    return res.status(200).send(result);
+    return res.status(200).send({"count":result});
+
  });
 ///Get All User
 router.get("/",async(req,res) => {

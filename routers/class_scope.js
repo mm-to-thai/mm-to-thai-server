@@ -17,7 +17,7 @@ router.get("/",async(req,res) =>{
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
     const searchValue = req.query.name;
-    const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${nameValue}.*`, 'i');
+    const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
    const classscopes = searchValue == undefined ? 
    await ClassScope
    .find({ name: pattern })
