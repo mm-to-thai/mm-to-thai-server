@@ -10,6 +10,7 @@ const admin = require("../middleware/admin");
 router.get("/",async(req,res) => {
     const classId = req.query.classId;
     const levelId = req.query.levelId;
+    const forQuestion = req.query.forQuestion;
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
     const searchValue = req.query.name;
@@ -27,6 +28,27 @@ router.get("/",async(req,res) => {
     const count = await Lesson.find({
         classId:classId,
         levelId:levelId
+    }).count();
+    const data = {
+        "count": count,
+        "data":lessons
+    };
+    return res.status(200).send(data);
+    }else if(forQuestion){
+        
+        const lessons = await Lesson.find({
+            classId:classId,
+            levelId:levelId,
+            forQuestion:forQuestion,
+        })
+    .populate("classId levelId","name")
+    .skip(page * limit)
+    .limit(limit)
+    .sort({_id:1});
+    const count = await Lesson.find({
+        classId:classId,
+        levelId:levelId,
+        forQuestion:forQuestion,
     }).count();
     const data = {
         "count": count,
