@@ -103,10 +103,17 @@ router.post("/",[auth,admin],async(req,res) =>{
 
 ///Update Lesson
 router.put("/:id",[auth,admin],async(req,res) => {
-    var lesson = await Lesson.findByIdAndUpdate(req.params.id,{
+    Lesson.findByIdAndUpdate(req.params.id,{
         $set:req.body,
-    },{ new : true }).populate("classId levelId");
-    return res.status(200).send(lesson);});
+    },{ new : true }).then((result) => {
+        result.populate("classId levelId","name")
+        .then((lesson) => {
+            return res.status(200).send(lesson);
+        });
+    }).catch((err) => {
+        return res.status(400).send(err);
+    });
+});
 
     //Delete Lesson
 router.delete("/:id",[auth,admin],async(req,res) => {
