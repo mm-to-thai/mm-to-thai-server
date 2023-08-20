@@ -6,6 +6,7 @@ var lessonJoi = Joi.object({
     image:Joi.string().required(),
     classId:Joi.string().required(),
     levelId:Joi.string().required(),
+    forQuestion:Joi.boolean().required(),
 });
 
 var schema = new mongoose.Schema({
@@ -28,6 +29,10 @@ var schema = new mongoose.Schema({
     levelId:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Level",
+        required:true,
+    },
+    forQuestion:{
+        type:Boolean,
         required:true,
     }
 });
