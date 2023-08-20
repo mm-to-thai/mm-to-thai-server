@@ -37,8 +37,7 @@ router.get("/",async(req,res) => {
     }else if(forQuestion){
         
         const lessons = await Lesson.find({
-            classId:classId,
-            levelId:levelId,
+            
             forQuestion:forQuestion,
         })
     .populate("classId levelId","name")
@@ -46,8 +45,7 @@ router.get("/",async(req,res) => {
     .limit(limit)
     .sort({_id:1});
     const count = await Lesson.find({
-        classId:classId,
-        levelId:levelId,
+        
         forQuestion:forQuestion,
     }).count();
     const data = {
