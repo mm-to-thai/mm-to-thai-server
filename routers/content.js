@@ -18,6 +18,7 @@ router.get("/",async(req,res) => {
     const lessonId = req.query.lessonId;
     var page = req.query.page == undefined ? 0 : req.query.page;
     var limit = req.query.limit == undefined ? 10 : req.query.limit;
+    var isAll = req.query.isAll;
     const searchValue = req.query.name;
     const pattern = searchValue == undefined ? new RegExp('.*John.*', 'i') : new RegExp(`.*${searchValue}.*`, 'i');
     if(classId && levelId && lessonId){
@@ -42,6 +43,19 @@ router.get("/",async(req,res) => {
     };
     return res.status(200).send(data);
     }
+    //if all
+    if(isAll){
+      const contents =  await Content.find()
+    .populate("classId levelId lessonId","name")
+    .sort({_id:1});
+    const count = await Content.find().count();
+    const data = {
+        "count": count,
+        "data":contents
+    };
+    return res.status(200).send(data);
+    }
+    //
     const contents = searchValue == undefined ?
      await Content.find()
     .populate("classId levelId lessonId","name")
