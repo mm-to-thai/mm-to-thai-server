@@ -5,7 +5,7 @@ var questionJoi = Joi.object({
     contentId:Joi.string().optional(),
     question:Joi.string().optional(),
     audioUrl:Joi.string().optional(),
-    choiceItems:Joi.array().min(4).max(4).required(),
+    choiceItems:Joi.array().min(2).required(),
     answer:Joi.string().required(),
     qestionType:Joi.string().required(),
     classId:Joi.string().required(),
@@ -30,8 +30,7 @@ var schema = new mongoose.Schema({
     choiceItems:{
         type:mongoose.Schema.Types.Array,
         of:String,
-        min:4,
-        max:4,
+        min:2,
         required:true,
     },
     answer:Joi.string().required(),
