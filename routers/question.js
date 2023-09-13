@@ -28,8 +28,8 @@ router.get("/",async(req,res) => {
             lessonId:lessonId,
         })
     .populate("classId levelId lessonId","name")
-    .populate("contentId","-classId -levelId -lessonId")
-    .skip(page * limit)
+/*     .populate("contentId","-classId -levelId -lessonId")
+ */    .skip(page * limit)
     .limit(limit)
     .sort({_id:1});
     const count = await Question.find({
@@ -46,8 +46,8 @@ router.get("/",async(req,res) => {
     const questions = searchValue == undefined ?
      await Question.find()
     .populate("classId levelId lessonId","name")
-    .populate("contentId","-classId -levelId -lessonId")
-    .skip(page * limit)
+/*     .populate("contentId","-classId -levelId -lessonId")
+ */    .skip(page * limit)
     .limit(limit)
     .sort({_id:1}) : await Question.find({answer:pattern})
     .populate("classId levelId lessonId","name")
