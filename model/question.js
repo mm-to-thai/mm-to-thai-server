@@ -26,7 +26,7 @@ var schema = new mongoose.Schema({
     audioUrl:{
         type:String,
         required:false,
-    }
+    },
     choiceItems:{
         type:mongoose.Schema.Types.Array,
         of:String,
