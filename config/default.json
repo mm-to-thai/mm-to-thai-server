@@ -1,4 +1,4 @@
 {
-    "jwtPrivateKey": "",
-    "db": ""
+    "jwtPrivateKey": "mySecureKey",
+    "db": "mongodb+srv://aungbomyint292:XtupvKhrrGLYvGja@cluster0.wmahi4f.mongodb.net/mm-to-thai?retryWrites=true&w=majority"
 }
